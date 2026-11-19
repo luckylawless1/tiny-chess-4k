@@ -195,7 +195,7 @@ def ev():
 
 TT = {}
 HC = {}
-NB = 50000
+NB = 55000
 ND = [0, False]
 NL = [False]
 
