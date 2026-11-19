@@ -1,30 +1,25 @@
-# tiny-chess-01 starter
+# Tiny Chess 4K
 
-A working entry to fork: `main.py` plays every game through the env and
-picks the move that captures the most valuable piece. It is a template,
-not a contender. Replace its one-line choice with a real search.
+A complete chess engine in a single `main.py` of **4,030 bytes**, built for
+the make.fun bounty [tiny-chess-01](https://make.fun/bounty/tiny-chess-01).
+The readable source (~11.9 KB) is minified and LZMA-packed into the file;
+at startup it decompresses and executes itself in memory. Python 3 stdlib
+only; no other repo file is read.
 
-## The size rule
+## How it plays
 
-- `main.py` is the whole engine: at most 4,096 bytes as committed,
-  Python 3.13, standard library only. It reads, imports or execs no other
-  file in the repository.
-- Every byte counts: comments, whitespace, docstrings.
-- Compression is allowed and counted. A `main.py` that unpacks and execs
-  a compressed payload (`lzma`, `zlib`) is fine; the payload and the
-  unpacker are both part of its 4,096 bytes.
-- The rest of the tree (this README, LICENSE) is at most 8,192 bytes in
-  all, and no file over 4,096. MIT, BSD, ISC and 0BSD licences fit.
-- Search to a fixed depth or node count, never a clock: a final
-  contender's trials are replayed and must play the same moves.
+- **Board**: 0x88 mailbox with incremental make/unmake — material, tapered
+  phase, pawn bitboards and a zobrist key (seeded PRNG constants) are
+  maintained incrementally. Full rules: castling, en passant, promotions,
+  check/stalemate, repetition and 100-ply draws.
+- **Search**: negamax alpha-beta with PVS, iterative deepening under a
+  fixed budget of 55,000 nodes per move (never wall-clock, so replays are
+  move-identical), transposition table, null-move pruning, check
+  extensions, and quiescence folded into the main search (captures,
+  promotions, check evasions). Ordering: TT move, MVV-LVA, promotions.
+- **Evaluation**: PeSTO tapered piece-square tables blended by phase,
+  quantized to fit, plus passed-pawn bonuses from pawn-span masks.
 
-## Grade it locally
-
-You need Docker and the `makefun` CLI. Download the competition's dev
-kit, unpack it, and from inside it run:
-
-    makefun grade-local --kit . --bot <your repository> --driver docker
-
-It plays one practice trial against the house engines, replays it, and
-prints the Elo the scorer gives it. Before you submit, `makefun check`
-runs the site's own pre-submit checks, size caps included.
+Local practice vs the kit gauntlet: Elo 1451 / 1654 / 1451 on trials
+0 / 1 / 2; 6 wins in a local 8-game final-style gauntlet, including wins
+over the nodes-1M and nodes-2M house engines.
