@@ -23,3 +23,8 @@ only; no other repo file is read.
 Local practice vs the kit gauntlet: Elo 1451 / 1654 / 1451 on trials
 0 / 1 / 2; 6 wins in a local 8-game final-style gauntlet, including wins
 over the nodes-1M and nodes-2M house engines.
+
+## Build note
+
+The readable engine source is `engine_source.py`; `main.py` is that
+source packed with the kit's own `makefun compress` command.
